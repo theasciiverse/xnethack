@@ -150,12 +150,16 @@ LIVELOG=0x11FFF
 #   %D current time, YYYYMMDDhhmmss format
 #   %n player name
 #   %N first character of player name
-DUMPLOGFILE=/tmp/xnethack.%n.%d.log
+#DUMPLOGFILE=/tmp/xnethack.%n.%d.log
+# Asciiverse: a relative name is in the player's folder,
+# $XDG_DATA_HOME/xnethack (default ~/.local/share/xnethack).
+DUMPLOGFILE=dumplog/%n.%d.txt
 
 # End of game HTML dump.
 # Only available if NetHack was compiled with DUMPHTML
 # Allows placeholders as above.
-DUMPHTMLFILE=/tmp/xnethack.%n.%d.html
+#DUMPHTMLFILE=/tmp/xnethack.%n.%d.html
+DUMPHTMLFILE=dumplog/%n.%d.html
 
 # Number of bones file pools.
 # The pool you belong to is determined at game start. You will

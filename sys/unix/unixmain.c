@@ -516,7 +516,10 @@ chdirx(const char *dir, boolean wr)
 #endif
     }
 
-#ifdef HACKDIR
+#ifdef AV_PATHS
+    if (!dir)
+        dir = av_hackdir(); /* beside the binary, else HACKDIR */
+#elif defined(HACKDIR)
     if (!dir)
         dir = HACKDIR;
 #endif

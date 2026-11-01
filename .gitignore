@@ -101,3 +101,7 @@ util/*.lib
 util/*.exp
 submodules/CHKSUMS.tmp
 sys/amiga/regex/
+
+# Asciiverse build output
+out/
+dist/

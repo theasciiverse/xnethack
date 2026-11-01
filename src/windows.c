@@ -1983,11 +1983,22 @@ dump_open_log(time_t now)
     dumplog_now = now;
 #ifdef DUMPLOG
     fname = dump_fmtstr(DUMPLOG_FILE, buf, TRUE);
+#ifdef AV_PATHS
+    /* Asciiverse: a relative DUMPLOGFILE is in the player's folder
+       (changed for the Asciiverse, 2026-11-01) */
+    if (fname && *fname != '/')
+        fname = (char *) fqname(fname, SCOREPREFIX, 0);
+#endif
     if (fname)
         dumplog_file = fopen(fname, "w");
 #endif
 #ifdef DUMPHTML
     fname = dump_fmtstr(DUMPHTML_FILE, buf, TRUE);
+#ifdef AV_PATHS
+    /* Asciiverse: and so is a relative DUMPHTMLFILE */
+    if (fname && *fname != '/')
+        fname = (char *) fqname(fname, SCOREPREFIX, 0);
+#endif
     if (fname)
         dumphtml_file = fopen(fname, "w");
 #endif

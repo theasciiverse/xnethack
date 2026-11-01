@@ -86,6 +86,16 @@
 /* #define VAR_PLAYGROUND "/var/lib/games/nethack" */
 
 /*
+ * Asciiverse: the variable parts live in the player's own folder,
+ * $XDG_DATA_HOME/xnethack (asciiverse/avpaths.c).
+ */
+#ifdef AV_PATHS
+extern const char *av_playground(void);
+extern const char *av_hackdir(void);
+#define VAR_PLAYGROUND av_playground()
+#endif
+
+/*
  * Define DEF_PAGER as your default pager, e.g. "/bin/cat" or "/usr/ucb/more"
  * If defined, it can be overridden by the environment variable PAGER.
  * NetHack will use its internal pager if DEF_PAGER is not defined _or_
