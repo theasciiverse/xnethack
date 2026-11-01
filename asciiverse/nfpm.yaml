@@ -1,0 +1,56 @@
+# System packages (.deb, .rpm, .apk, Arch) for xNetHack, built by nfpm from
+# the same static Linux build as the av archive (asciiverse/build.sh, out/).
+# The release workflow sets VERSION, RELEASE (our packaging release) and
+# ARCH (amd64 or arm64).
+#
+# No .desktop file on purpose: av is the one place titles are started from,
+# so Asciiverse packages never add menu entries (asciiverse/CLAUDE.md).
+#
+# The binary looks for its data beside itself first, then in
+# /usr/share/xnethack, the HACKDIR compiled in by asciiverse/hints. Nothing
+# is installed setgid and nothing is written under /usr or /var: each
+# player's record, saves, bones and dumplogs go to ~/.local/share/xnethack.
+name: xnethack
+arch: ${ARCH}
+platform: linux
+version: ${VERSION}
+release: ${RELEASE}
+section: games
+priority: optional
+maintainer: Asciiverse <packages@asciiverse.sh>
+vendor: Asciiverse
+homepage: https://github.com/theasciiverse/xnethack
+license: NGPL
+description: |
+  NetHack, rebalanced and made more interesting.
+  A variant of NetHack 5.0 that fixes balance problems, removes tedium and
+  tries new ideas, in the tty interface (curses with
+  OPTIONS=windowtype:curses). By copperwater and contributors, version
+  10.0, packaged by Asciiverse; saves and scores stay in the player's own
+  ~/.local/share/xnethack.
+contents:
+  - src: out/xnethack
+    dst: /usr/bin/xnethack
+    file_info: { mode: 0755 }
+  - src: out/nhdat
+    dst: /usr/share/xnethack/nhdat
+    file_info: { mode: 0644 }
+  - src: out/sysconf
+    dst: /usr/share/xnethack/sysconf
+    type: config|noreplace
+    file_info: { mode: 0644 }
+  - src: out/symbols
+    dst: /usr/share/xnethack/symbols
+    file_info: { mode: 0644 }
+  - src: out/license
+    dst: /usr/share/xnethack/license
+    file_info: { mode: 0644 }
+  - src: dat/license
+    dst: /usr/share/doc/xnethack/copyright
+    file_info: { mode: 0644 }
+  - src: doc/Guidebook.txt
+    dst: /usr/share/doc/xnethack/Guidebook.txt
+    file_info: { mode: 0644 }
+  - src: doc/xnethack.6
+    dst: /usr/share/man/man6/xnethack.6
+    file_info: { mode: 0644 }

@@ -1,0 +1,71 @@
+#
+# NetHack may be freely redistributed.  See license for details.
+#
+#-PRE
+# Asciiverse hints file: one tty and curses binary for Linux (static, in
+# Alpine) and macOS, set up by asciiverse/build.sh with
+#   sh sys/unix/setup.sh asciiverse/hints
+# Based on linux-minimal and linux.500.
+#
+# The binary reads its data (nhdat, sysconf, license, symbols) from the
+# folder it sits in, else from HACKDIR below, where the system packages
+# put it; everything it writes goes to the player's own folder,
+# $XDG_DATA_HOME/xnethack (asciiverse/avpaths.c, AV_PATHS).
+# build.sh passes CC, LFLAGS and CURSESLIB.
+
+PREFIX=/usr
+HACKDIR=/usr/share/xnethack
+SHELLDIR=
+INSTDIR=$(HACKDIR)
+VARDIR=$(HACKDIR)
+
+WANT_WIN_TTY=1
+WANT_WIN_CURSES=1
+WANT_DEFAULT=tty
+
+CFLAGS=-O2 -I../include
+CFLAGS+=-DCURSES_GRAPHICS -D_XOPEN_SOURCE_EXTENDED=1
+CFLAGS+=-DCURSES_UNICODE
+CFLAGS+=-DDEFAULT_WINDOW_SYS=\"tty\"
+CFLAGS+=-DDLB
+CFLAGS+=-DHACKDIR=\"$(HACKDIR)\"
+CFLAGS+=-DSYSCF -DSYSCF_FILE=\"sysconf\" -DSECURE
+CFLAGS+=-DTIMED_DELAY -DDUMPLOG -DSELF_RECOVER
+CFLAGS+=-DCONFIG_ERROR_SECURE=FALSE
+CFLAGS+=-DAV_PATHS
+# saves compressed by zlib, linked in, instead of running /usr/bin/compress
+CFLAGS+=-DZLIB_COMP
+# no crash reports through the browser (xdg-open or open), no gdb
+CFLAGS+=-DNOCRASHREPORT -DNOPANICTRACE
+# Alpine's fortify headers want mempcpy declared before curses.h pulls
+# them in, which musl does only with _GNU_SOURCE
+ifeq ($(shell uname -s),Linux)
+CFLAGS+=-D_GNU_SOURCE
+endif
+
+# liblua.a: the lua code doesn't read NetHack's config.h, so its POSIX
+# switch comes through make (as in linux-minimal)
+SYSCFLAGS=-DLUA_USE_POSIX
+
+LINK=$(CC)
+
+WINSRC = $(WINTTYSRC) $(WINCURSESSRC)
+WINOBJ = $(WINTTYOBJ) $(WINCURSESOBJ)
+WINLIB = $(CURSESLIB)
+LIBS = -lz
+
+# where the player's files go
+HINTOBJ = $(TARGETPFX)avpaths.o
+
+CHOWN=true
+CHGRP=true
+
+VARDIRPERM = 0755
+VARFILEPERM = 0600
+GAMEPERM = 0755
+
+#-POST
+ifdef MAKEFILE_SRC
+$(TARGETPFX)avpaths.o: ../asciiverse/avpaths.c $(HACK_H)
+	$(CC) $(CFLAGS) -c -o$@ ../asciiverse/avpaths.c
+endif
