@@ -37,6 +37,9 @@ CFLAGS+=-DAV_PATHS
 CFLAGS+=-DZLIB_COMP
 # no crash reports through the browser (xdg-open or open), no gdb
 CFLAGS+=-DNOCRASHREPORT -DNOPANICTRACE
+# curses.h has tparm()'s prototype; without this termcap.c declares it
+# again old-style, which clang (Xcode 15 and later) rejects on macOS
+CFLAGS+=-DNOTPARMDECL
 # Alpine's fortify headers want mempcpy declared before curses.h pulls
 # them in, which musl does only with _GNU_SOURCE
 ifeq ($(shell uname -s),Linux)

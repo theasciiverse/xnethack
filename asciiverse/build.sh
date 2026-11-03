@@ -30,7 +30,9 @@ cc="cc${CC_ARCH:+ -arch $CC_ARCH}"
 lua=lua-$(sed -n 's/^LUA_VERSION *= *//p' sys/unix/Makefile.top)
 if [ ! -f "lib/$lua/src/lua.h" ]; then
   mkdir -p lib
-  curl -fsSL -o "lib/$lua.tar.gz" "https://www.lua.org/ftp/$lua.tar.gz"
+  # lua.org drops or refuses a connection now and then: retry, slowly
+  curl -fsSL --retry 8 --retry-delay 15 --retry-all-errors --connect-timeout 30 \
+    -o "lib/$lua.tar.gz" "https://www.lua.org/ftp/$lua.tar.gz"
   want=$(awk -v f="$lua.tar.gz" '$2 == f { print $1 }' submodules/CHKSUMS)
   got=$($sha "lib/$lua.tar.gz" | cut -d' ' -f1)
   if [ -z "$want" ] || [ "$want" != "$got" ]; then

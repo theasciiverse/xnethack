@@ -45,11 +45,15 @@ All of these are guarded by `#ifdef AV_PATHS`, defined only by
   the default (`OPTIONS=windowtype:curses` picks curses); `DLB`,
   `SELF_RECOVER`, `DUMPLOG`, zlib-compressed saves linked in
   (`ZLIB_COMP`), no crash reports through a browser or gdb
-  (`NOCRASHREPORT`, `NOPANICTRACE`).
+  (`NOCRASHREPORT`, `NOPANICTRACE`). `NOTPARMDECL`, as upstream's own
+  hints have it: otherwise `win/tty/termcap.c` declares `tparm()` again
+  old-style over the prototype in macOS's `curses.h`, which Apple clang
+  rejects as conflicting types.
 - `asciiverse/build.sh`: fully static Linux in Alpine (musl, ncursesw and
   zlib linked in), macOS per architecture (`CC_ARCH`), and a plain glibc
   build on other Linux to try things locally (`-lncursesw`). Lua 5.4.8 is
-  fetched from lua.org, checked against `submodules/CHKSUMS`, and linked
+  fetched from lua.org (with retries, lua.org sometimes drops the
+  connection), checked against `submodules/CHKSUMS`, and linked
   in statically. Builds xNetHack's extra `shirts` data file with the rest.
   Leaves the install in `out/`.
 - `asciiverse/nfpm.yaml`: .deb, .rpm, .apk and Arch packages:
